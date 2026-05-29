@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      font-size: 16px; line-height: 1.6; color: #1e293b;
+      max-width: 820px; margin: 0 auto; padding: 2.5rem 1.5rem;
+    }
+    h1,h2,h3,h4,h5,h6 { font-weight: 700; margin: 1.5rem 0 0.6rem; line-height: 1.25; color: #0f172a; }
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.5rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.3rem; }
+    h3 { font-size: 1.25rem; } h4 { font-size: 1.1rem; } h5,h6 { font-size: 1rem; }
+    p { margin: 0 0 0.85rem; }
+    a { color: #6366f1; text-decoration: underline; text-underline-offset: 2px; }
+    strong { font-weight: 600; color: #0f172a; }
+    em { font-style: italic; }
+    del { text-decoration: line-through; color: #94a3b8; }
+    code {
+      font-family: "JetBrains Mono","Fira Code",Menlo,monospace;
+      background: #f1f5f9; color: #e11d48;
+      padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.85em;
+    }
+    pre {
+      background: #0f172a; border-radius: 10px;
+      padding: 1.1rem 1.25rem; overflow-x: auto; margin: 1rem 0;
+    }
+    pre code { background: none; color: #e2e8f0; padding: 0; font-size: 0.875rem; line-height: 1.7; }
+    blockquote {
+      border-left: 4px solid #a5b4fc; margin: 1rem 0;
+      padding: 0.5rem 1rem; background: #eef2ff;
+      border-radius: 0 6px 6px 0; color: #475569;
+    }
+    blockquote p { margin: 0; }
+    ul,ol { padding-left: 1.75rem; margin: 0 0 0.85rem; }
+    li { margin-bottom: 0.25rem; line-height: 1.7; }
+    li input[type="checkbox"] { margin-right: 0.4rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+    thead tr { background: #f8fafc; }
+    th { border: 1px solid #e2e8f0; padding: 0.5rem 0.85rem; text-align: left; font-weight: 600; color: #374151; }
+    td { border: 1px solid #e2e8f0; padding: 0.5rem 0.85rem; color: #4b5563; }
+    tbody tr:nth-child(even) { background: #f8fafc; }
+    hr { border: none; border-top: 1px solid #e2e8f0; margin: 1.5rem 0; }
+    img { max-width: 100%; border-radius: 8px; display: block; margin: 0.75rem 0; }
+    kbd {
+      display: inline-block; padding: 0.1em 0.45em;
+      font-family: monospace; font-size: 0.85em;
+      border: 1px solid #cbd5e1; border-radius: 4px;
+      background: #f8fafc; box-shadow: 0 1px 0 #94a3b8;
+    }
+    details { border: 1px solid #e2e8f0; border-radius: 6px; padding: 0.5rem 1rem; margin: 0.75rem 0; }
+    summary { cursor: pointer; font-weight: 500; }
+  </style>
+</head>
+<body>
+<h1>HTTP Supplementary Guide — Filling the Gaps for Beginners</h1>
+<p>This document supplements the existing HTTP guide with the most important topics that were missing or underdeveloped. Each section is written for absolute beginners learning web development.</p>
+<hr>
+<h2>SUPPLEMENT 1 — Seeing HTTP in Real Life: Chrome DevTools</h2>
+<p>One of the most important skills for any web developer is being able to <strong>see real HTTP requests and responses in your browser</strong>. You do not need any special tool — it is built into Chrome (and all modern browsers).</p>
+<h3>How to Open DevTools Network Tab</h3>
+<ol>
+<li>Open <strong>Google Chrome</strong>.</li>
+<li>Visit any website, for example: <code>https://example.com</code></li>
+<li>Press <code>F12</code> on Windows/Linux, or <code>Cmd + Option + I</code> on Mac.</li>
+<li>Click the <strong>"Network"</strong> tab at the top of the DevTools panel.</li>
+<li><strong>Refresh the page</strong> (<code>Ctrl + R</code> or <code>Cmd + R</code>).</li>
+<li>You will now see every HTTP request the page made.</li>
+</ol>
+<h3>What You Will See</h3>
+<pre><code>Name              Status  Method  Type       Size    Time
+example.com/      200     GET     document   2.4 kB  210 ms
+style.css         200     GET     stylesheet 1.1 kB  45 ms
+logo.png          200     GET     image      8.3 kB  78 ms
+</code></pre>
+<p>Each row is one HTTP request.</p>
+<h3>Clicking a Request — What Is Inside</h3>
+<p>When you click on any row, you will see sub-tabs:</p>
+<p><strong>Headers tab</strong> — shows the request headers you sent and the response headers the server sent back.</p>
+<pre><code>Request Headers:
+  GET / HTTP/1.1
+  Host: example.com
+  User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64) ...
+  Accept: text/html,application/xhtml+xml,...
+
+Response Headers:
+  HTTP/1.1 200 OK
+  Content-Type: text/html; charset=UTF-8
+  Content-Length: 1256
+  Cache-Control: max-age=86400
+</code></pre>
+<p><strong>Preview tab</strong> — shows the formatted response body (HTML rendered, JSON structured).</p>
+<p><strong>Response tab</strong> — shows the raw text of the response body.</p>
+<p><strong>Timing tab</strong> — shows exactly how long each phase took (DNS lookup, TCP connect, server processing, download).</p>
+<h3>Why This Matters</h3>
+<p>Reading DevTools is how real developers:</p>
+<ul>
+<li>Debug why an API call is failing.</li>
+<li>Check what headers are being sent.</li>
+<li>Verify that authentication tokens are attached.</li>
+<li>Inspect what data the server actually returned.</li>
+</ul>
+<p><strong>Practice</strong>: Open DevTools, visit <code>https://jsonplaceholder.typicode.com/posts/1</code>, and look at the Network tab. You will see a real API call with a real JSON response.</p>
+<hr>
+<h2>SUPPLEMENT 2 — Query Parameters vs Path Parameters</h2>
+<p>When you request a resource from a server, there are two common ways to pass extra information in the URL.</p>
+<h3>Path Parameters</h3>
+<p>Path parameters are part of the URL path itself. They identify a <strong>specific resource</strong>.</p>
+<pre><code>GET /users/42
+GET /products/laptop
+GET /orders/8899
+</code></pre>
+<p>In each case, <code>42</code>, <code>laptop</code>, and <code>8899</code> are path parameters. They tell the server <em>which specific item</em> you want.</p>
+<p>Think of it like a street address: <code>/users/42</code> means "give me the specific user who lives at position 42".</p>
+<h3>Query Parameters</h3>
+<p>Query parameters come after a <code>?</code> in the URL. They are used for <strong>filtering, sorting, searching, or optional settings</strong>.</p>
+<pre><code>GET /products?category=laptop&amp;sort=price&amp;page=2
+</code></pre>
+<p>Breaking this down:</p>
+<table><thead><tr><th>Part</th><th>Meaning</th></tr></thead><tbody><tr><td><code>/products</code></td><td>The base resource</td></tr><tr><td><code>?</code></td><td>Marks the start of query params</td></tr><tr><td><code>category=laptop</code></td><td>Filter by category "laptop"</td></tr><tr><td><code>&amp;</code></td><td>Separator between params</td></tr><tr><td><code>sort=price</code></td><td>Sort results by price</td></tr><tr><td><code>page=2</code></td><td>Show the second page of results</td></tr></tbody></table>
+<h3>Multiple Query Parameters</h3>
+<p>You can chain as many as you need using <code>&amp;</code>:</p>
+<pre><code>GET /flights?from=HAN&amp;to=SGN&amp;date=2025-12-01&amp;class=economy
+</code></pre>
+<h3>When to Use Which?</h3>
+<table><thead><tr><th>Situation</th><th>Use</th><th>Example</th></tr></thead><tbody><tr><td>You want a <strong>specific</strong> item</td><td>Path parameter</td><td><code>GET /users/5</code></td></tr><tr><td>You want to <strong>filter</strong> a list</td><td>Query parameter</td><td><code>GET /users?role=admin</code></td></tr><tr><td>You want to <strong>search</strong></td><td>Query parameter</td><td><code>GET /products?q=headphones</code></td></tr><tr><td>You want to <strong>sort</strong> results</td><td>Query parameter</td><td><code>GET /posts?sort=date&amp;order=desc</code></td></tr><tr><td>You want a <strong>nested</strong> resource</td><td>Path parameter</td><td><code>GET /users/5/orders</code></td></tr></tbody></table>
+<h3>Real-World Example: YouTube</h3>
+<pre><code>https://www.youtube.com/watch?v=dQw4w9WgXcQ
+</code></pre>
+<p>Here, <code>watch</code> is the path, and <code>v=dQw4w9WgXcQ</code> is a query parameter — the video ID. YouTube uses a query param here because <code>watch</code> is not a resource name; it is an action.</p>
+<h3>Encoding Special Characters</h3>
+<p>Query parameter values cannot contain spaces or certain special characters. They must be <strong>URL-encoded</strong>:</p>
+<pre><code>Space   →  %20  or  +
+&amp;       →  %26
+=       →  %3D
+
+Example:
+GET /search?q=hello%20world
+GET /search?q=hello+world
+</code></pre>
+<p>Modern browsers and HTTP libraries handle this encoding automatically.</p>
+<hr>
+<h2>SUPPLEMENT 3 — Request Body Formats (Content-Type in Depth)</h2>
+<p>When you send a POST, PUT, or PATCH request, you often include a body — the data you want to send to the server. There are several different formats for that body, and the server needs to know which format you are using.</p>
+<h3>The Key Rule</h3>
+<blockquote>
+<p><strong>If you send a body, you must tell the server its format using the <code>Content-Type</code> request header.</strong></p>
+</blockquote>
+<p>This is one of the most common causes of bugs for beginners. If you send JSON but forget to set <code>Content-Type: application/json</code>, the server receives the data but does not know how to read it. The result is usually a <code>400 Bad Request</code> error.</p>
+<hr>
+<h3>Format 1: JSON (application/json)</h3>
+<p>The most common format for modern APIs.</p>
+<p><strong>Request header:</strong></p>
+<pre><code>Content-Type: application/json
+</code></pre>
+<p><strong>Request body:</strong></p>
+<pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">"name"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Alice"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"email"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"alice@example.com"</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">"age"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">25</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+<p><strong>Used for:</strong> REST APIs, sending structured data between frontend and backend.</p>
+<hr>
+<h3>Format 2: Form Data (application/x-www-form-urlencoded)</h3>
+<p>This is what a traditional HTML <code>&lt;form&gt;</code> submits by default. Data is encoded as key-value pairs, similar to query parameters.</p>
+<p><strong>Request header:</strong></p>
+<pre><code>Content-Type: application/x-www-form-urlencoded
+</code></pre>
+<p><strong>Request body (raw text, not JSON):</strong></p>
+<pre><code>name=Alice&amp;email=alice%40example.com&amp;age=25
+</code></pre>
+<p><strong>Used for:</strong> HTML form submissions, some older APIs, login forms.</p>
+<hr>
+<h3>Format 3: Multipart Form Data (multipart/form-data)</h3>
+<p>Used when you need to upload files along with other data. Each piece of data is a separate "part" in the request.</p>
+<p><strong>Request header:</strong></p>
+<pre><code>Content-Type: multipart/form-data; boundary=----FormBoundary7MA4
+</code></pre>
+<p><strong>Request body:</strong></p>
+<pre><code>------FormBoundary7MA4
+Content-Disposition: form-data; name="username"
+
+alice
+------FormBoundary7MA4
+Content-Disposition: form-data; name="avatar"; filename="photo.jpg"
+Content-Type: image/jpeg
+
+[binary image data here]
+------FormBoundary7MA4--
+</code></pre>
+<p><strong>Used for:</strong> File uploads, profile picture changes, document submissions.</p>
+<hr>
+<h3>Format 4: Plain Text (text/plain)</h3>
+<p>Sends raw text, rarely used in APIs.</p>
+<p><strong>Request header:</strong></p>
+<pre><code>Content-Type: text/plain
+</code></pre>
+<p><strong>Request body:</strong></p>
+<pre><code>Hello server, this is plain text.
+</code></pre>
+<hr>
+<h3>Comparison Table</h3>
+<table><thead><tr><th>Format</th><th>Header Value</th><th>Best Used For</th></tr></thead><tbody><tr><td>JSON</td><td><code>application/json</code></td><td>REST APIs, structured data</td></tr><tr><td>URL-encoded form</td><td><code>application/x-www-form-urlencoded</code></td><td>Simple HTML forms, login</td></tr><tr><td>Multipart form (with files)</td><td><code>multipart/form-data</code></td><td>File uploads</td></tr><tr><td>Plain text</td><td><code>text/plain</code></td><td>Simple text payloads</td></tr></tbody></table>
+<hr>
+<h3>The Content-Type ↔ Body Connection (Very Important)</h3>
+<p>The <code>Content-Type</code> header and the body format <strong>must always match</strong>. If they do not, the server will reject or misread your request.</p>
+<pre><code>WRONG ❌ — Header says JSON but body is form-encoded
+Content-Type: application/json
+Body: name=Alice&amp;age=25
+
+CORRECT ✅ — Header matches the body format
+Content-Type: application/json
+Body: {"name": "Alice", "age": 25}
+</code></pre>
+<pre><code>WRONG ❌ — Header says form-encoded but body is JSON
+Content-Type: application/x-www-form-urlencoded
+Body: {"name": "Alice", "age": 25}
+
+CORRECT ✅ — Header matches the body format
+Content-Type: application/x-www-form-urlencoded
+Body: name=Alice&amp;age=25
+</code></pre>
+<hr>
+<h2>SUPPLEMENT 4 — Response Headers (Explained for Beginners)</h2>
+<p>The existing guide covered request headers well, but the server also sends headers back in the response. These response headers are equally important to understand.</p>
+<h3>Common Response Headers</h3>
+<table><thead><tr><th>Header</th><th>What It Does</th><th>Example Value</th></tr></thead><tbody><tr><td><code>Content-Type</code></td><td>Tells the client what format the response body is in</td><td><code>application/json</code></td></tr><tr><td><code>Content-Length</code></td><td>How many bytes are in the response body</td><td><code>1256</code></td></tr><tr><td><code>Content-Encoding</code></td><td>How the body is compressed</td><td><code>gzip</code></td></tr><tr><td><code>Cache-Control</code></td><td>How long the client should cache this response</td><td><code>max-age=3600</code></td></tr><tr><td><code>Set-Cookie</code></td><td>Creates a cookie in the browser</td><td><code>sessionId=abc123; HttpOnly</code></td></tr><tr><td><code>Location</code></td><td>Where to redirect the client (used with 3xx codes)</td><td><code>https://example.com/new-page</code></td></tr><tr><td><code>WWW-Authenticate</code></td><td>Tells client what authentication is required</td><td><code>Bearer realm="api"</code></td></tr><tr><td><code>Access-Control-Allow-Origin</code></td><td>CORS: which origins can access this API</td><td><code>https://myapp.com</code></td></tr><tr><td><code>X-Rate-Limit-Remaining</code></td><td>How many API requests the client has left</td><td><code>95</code></td></tr><tr><td><code>ETag</code></td><td>Version identifier for the resource (used in caching)</td><td><code>"abc123xyz"</code></td></tr><tr><td><code>Retry-After</code></td><td>How long to wait before making the next request</td><td><code>30</code></td></tr></tbody></table>
+<h3>The Content-Type Response Header</h3>
+<p>Just like in requests, the server sets <code>Content-Type</code> in the response so the client knows how to parse the body.</p>
+<pre><code class="hljs language-http">HTTP/1.1 200 OK
+Content-Type: application/json
+
+{"user": "Alice", "id": 42}
+</code></pre>
+<p>If the response <code>Content-Type</code> is <code>text/html</code>, the browser renders it as a webpage. If it is <code>application/json</code>, JavaScript can parse it as data. If it is <code>image/png</code>, the browser displays it as an image.</p>
+<h3>The Set-Cookie Header</h3>
+<p>This is how the server plants a cookie in your browser. The next time you visit, the browser automatically sends that cookie back.</p>
+<pre><code class="hljs language-http">HTTP/1.1 200 OK
+Set-Cookie: sessionId=abc123; HttpOnly; Secure; Max-Age=86400
+</code></pre>
+<table><thead><tr><th>Option</th><th>Meaning</th></tr></thead><tbody><tr><td><code>HttpOnly</code></td><td>JavaScript cannot read this cookie (prevents XSS attacks)</td></tr><tr><td><code>Secure</code></td><td>Cookie is only sent over HTTPS connections</td></tr><tr><td><code>Max-Age</code></td><td>Cookie expires after this many seconds</td></tr><tr><td><code>SameSite</code></td><td>Controls when cookie is sent on cross-site requests</td></tr></tbody></table>
+<h3>The Location Header (Redirects)</h3>
+<p>When the server responds with a <code>301</code> or <code>302</code> status code, the <code>Location</code> header tells the browser where to go next.</p>
+<pre><code class="hljs language-http">HTTP/1.1 301 Moved Permanently
+Location: https://www.example.com/new-url
+</code></pre>
+<p>The browser automatically follows this redirect. You usually see this when websites move pages or redirect HTTP to HTTPS.</p>
+<hr>
+<h2>SUPPLEMENT 5 — Annotated Raw HTTP Messages</h2>
+<p>HTTP is just <strong>plain text</strong> sent over a network connection. Understanding what the raw message looks like removes a lot of mystery.</p>
+<h3>A Complete Raw HTTP Request</h3>
+<pre><code>POST /api/login HTTP/1.1                  ← Request Line: method + path + version
+Host: example.com                         ← Which server to talk to
+Content-Type: application/json            ← The format of the body we are sending
+Content-Length: 46                        ← How many bytes the body is
+Accept: application/json                  ← What format we want back
+User-Agent: MyApp/1.0                     ← Who we are (app name and version)
+Authorization: Bearer eyJhbGci...         ← Our authentication token
+                                          ← Blank line REQUIRED — separates headers from body
+{                                         ← Body starts here
+  "email": "alice@example.com",
+  "password": "secretpassword"
+}
+</code></pre>
+<p><strong>Line-by-line explanation:</strong></p>
+<table><thead><tr><th>Line</th><th>What It Is</th><th>Why It Matters</th></tr></thead><tbody><tr><td><code>POST /api/login HTTP/1.1</code></td><td>Request line</td><td>Tells the server: method=POST, resource=/api/login, protocol version=1.1</td></tr><tr><td><code>Host: example.com</code></td><td>Required header</td><td>The server needs to know which domain is being requested (one server can host many sites)</td></tr><tr><td><code>Content-Type: application/json</code></td><td>Body format</td><td>Tells server "my body is JSON, please parse it as JSON"</td></tr><tr><td><code>Content-Length: 46</code></td><td>Body size</td><td>Tells server how many bytes to read for the body</td></tr><tr><td><code>Accept: application/json</code></td><td>Desired response format</td><td>Tells server "please respond in JSON"</td></tr><tr><td><code>User-Agent: MyApp/1.0</code></td><td>Client identification</td><td>Useful for servers to log what clients are using</td></tr><tr><td><code>Authorization: Bearer eyJ...</code></td><td>Authentication</td><td>Proves who you are</td></tr><tr><td><em>(blank line)</em></td><td>Header/body separator</td><td><strong>Required by HTTP spec. Without it, the server does not know where headers end.</strong></td></tr><tr><td><code>{"email": ...}</code></td><td>Request body</td><td>The actual data being sent</td></tr></tbody></table>
+<hr>
+<h3>A Complete Raw HTTP Response</h3>
+<pre><code>HTTP/1.1 200 OK                           ← Status Line: version + code + message
+Content-Type: application/json            ← The format of the body being returned
+Content-Length: 89                        ← How many bytes the body is
+Set-Cookie: sessionId=xyz789; HttpOnly    ← Server is creating a session cookie
+Cache-Control: no-store                   ← Do not cache this (it's sensitive login data)
+X-Request-Id: req_abc123                  ← Unique ID for this request (useful for debugging)
+                                          ← Blank line REQUIRED
+{                                         ← Body starts here
+  "token": "eyJhbGciOiJIUzI1NiJ9...",
+  "user": {"id": 42, "name": "Alice"}
+}
+</code></pre>
+<p><strong>Line-by-line explanation:</strong></p>
+<table><thead><tr><th>Line</th><th>What It Is</th><th>Why It Matters</th></tr></thead><tbody><tr><td><code>HTTP/1.1 200 OK</code></td><td>Status line</td><td>Protocol version + status code + human-readable label</td></tr><tr><td><code>Content-Type: application/json</code></td><td>Response body format</td><td>Tells client "parse my body as JSON"</td></tr><tr><td><code>Content-Length: 89</code></td><td>Response body size</td><td>Tells client when the body is fully received</td></tr><tr><td><code>Set-Cookie: sessionId=xyz789; HttpOnly</code></td><td>Creates browser cookie</td><td>Client will send this cookie on future requests</td></tr><tr><td><code>Cache-Control: no-store</code></td><td>Caching instruction</td><td>Client must not cache this response (it contains sensitive data)</td></tr><tr><td><code>X-Request-Id: req_abc123</code></td><td>Custom debug header</td><td>Not a standard header; many APIs add these for tracing errors</td></tr><tr><td><em>(blank line)</em></td><td>Header/body separator</td><td>Required</td></tr><tr><td><code>{"token": ...}</code></td><td>Response body</td><td>The actual data returned by the server</td></tr></tbody></table>
+<hr>
+<h2>SUPPLEMENT 6 — Understanding 401 vs 403 (Common Beginner Confusion)</h2>
+<p>These two status codes are often confused because their names are counterintuitive in everyday English.</p>
+<h3>The Core Difference</h3>
+<table><thead><tr><th>Code</th><th>Name</th><th>What It Actually Means</th></tr></thead><tbody><tr><td><code>401 Unauthorized</code></td><td>Should be called "Unauthenticated"</td><td>You have not proven who you are yet. No valid credentials were provided.</td></tr><tr><td><code>403 Forbidden</code></td><td>Correctly named</td><td>You have proven who you are, but you are not allowed to access this resource.</td></tr></tbody></table>
+<h3>Simple Analogy</h3>
+<p>Imagine a company office building:</p>
+<ul>
+<li><strong>401</strong> = You tried to enter the building without a badge. The security guard says: "I don't know who you are. Show me your ID."</li>
+<li><strong>403</strong> = You showed your badge and the guard recognizes you as an intern. But you are trying to access the executive floor. The guard says: "I know exactly who you are, but you don't have permission to go there."</li>
+</ul>
+<h3>Code Examples</h3>
+<p><strong>Scenario 1: No token provided → 401</strong></p>
+<pre><code class="hljs language-http">GET /api/profile HTTP/1.1
+Host: example.com
+(no Authorization header)
+
+Response:
+HTTP/1.1 401 Unauthorized
+WWW-Authenticate: Bearer realm="api"
+
+{"error": "Authentication required. Please log in."}
+</code></pre>
+<p><strong>Scenario 2: Invalid or expired token → 401</strong></p>
+<pre><code class="hljs language-http">GET /api/profile HTTP/1.1
+Authorization: Bearer expired_or_invalid_token
+
+Response:
+HTTP/1.1 401 Unauthorized
+
+{"error": "Token is invalid or has expired."}
+</code></pre>
+<p><strong>Scenario 3: Valid token, but insufficient permissions → 403</strong></p>
+<pre><code class="hljs language-http">DELETE /api/users/5 HTTP/1.1
+Authorization: Bearer valid_regular_user_token
+
+Response:
+HTTP/1.1 403 Forbidden
+
+{"error": "Only administrators can delete users."}
+</code></pre>
+<h3>Quick Debugging Guide</h3>
+<p>When you see <code>401</code>, ask yourself:</p>
+<ul>
+<li>Did I forget to send the Authorization header?</li>
+<li>Is my token expired? Do I need to refresh it or log in again?</li>
+<li>Is the token format correct? (e.g., <code>Bearer </code> prefix required?)</li>
+</ul>
+<p>When you see <code>403</code>, ask yourself:</p>
+<ul>
+<li>Am I logged in as the right user? (Maybe test with an admin account)</li>
+<li>Does my account have the right role or permission?</li>
+<li>Is this resource restricted to certain plans or tiers?</li>
+</ul>
+<hr>
+<h2>SUPPLEMENT 7 — What to Do When You See HTTP Errors</h2>
+<p>Status codes are not just numbers to memorize — you need to know how to <strong>react</strong> when you encounter them. Here is a practical guide for beginners.</p>
+<h3>400 Bad Request</h3>
+<p><strong>What happened:</strong> You sent something the server could not understand or accept.</p>
+<p><strong>Common causes:</strong></p>
+<ul>
+<li>Missing required fields in the JSON body</li>
+<li>Sending the wrong data type (string instead of number)</li>
+<li>Malformed JSON (missing a comma, extra bracket, etc.)</li>
+<li>Wrong <code>Content-Type</code> header</li>
+</ul>
+<p><strong>What to do:</strong></p>
+<ol>
+<li>Check the response body — the server usually explains what is wrong (e.g., <code>"email is required"</code>)</li>
+<li>Validate your JSON is syntactically correct (use a JSON validator tool)</li>
+<li>Verify all required fields are present</li>
+<li>Check the <code>Content-Type</code> header matches your body format</li>
+</ol>
+<hr>
+<h3>401 Unauthorized</h3>
+<p><strong>What happened:</strong> You are not authenticated.</p>
+<p><strong>What to do:</strong></p>
+<ol>
+<li>Make sure you are sending the Authorization header</li>
+<li>Check if your token has expired — log in again to get a fresh token</li>
+<li>Verify the token format: most APIs want <code>Authorization: Bearer your_token_here</code></li>
+<li>Check if the token is being read from the right place in your code</li>
+</ol>
+<hr>
+<h3>403 Forbidden</h3>
+<p><strong>What happened:</strong> You are authenticated but not allowed.</p>
+<p><strong>What to do:</strong></p>
+<ol>
+<li>Verify you are using the correct account (not a test account that lacks permissions)</li>
+<li>Check if the endpoint requires a special role (admin, moderator, paid plan)</li>
+<li>Read the API documentation for permission requirements</li>
+</ol>
+<hr>
+<h3>404 Not Found</h3>
+<p><strong>What happened:</strong> The resource does not exist at that URL.</p>
+<p><strong>Common causes:</strong></p>
+<ul>
+<li>Typo in the URL</li>
+<li>The resource was deleted</li>
+<li>Wrong base URL (e.g., staging URL in production code)</li>
+<li>You are using an ID that does not exist</li>
+</ul>
+<p><strong>What to do:</strong></p>
+<ol>
+<li>Double-check the URL carefully for typos</li>
+<li>Confirm the resource ID actually exists</li>
+<li>Check the API documentation to verify the correct endpoint path</li>
+<li>Make sure you are pointing at the right environment (development vs production)</li>
+</ol>
+<hr>
+<h3>422 Unprocessable Entity</h3>
+<p><strong>What happened:</strong> The server understood the request format, but the data fails validation rules.</p>
+<p><strong>Example:</strong> You sent valid JSON, but the <code>age</code> field is <code>-5</code>, which makes no business sense.</p>
+<p><strong>What to do:</strong></p>
+<ol>
+<li>Read the response body carefully — the server usually lists exactly which fields failed and why</li>
+<li>Fix the data to meet the business rules (valid age range, required email format, etc.)</li>
+</ol>
+<hr>
+<h3>429 Too Many Requests</h3>
+<p><strong>What happened:</strong> You have sent too many requests in a short time. The server is rate-limiting you.</p>
+<p><strong>What to do:</strong></p>
+<ol>
+<li>Check the <code>Retry-After</code> response header — it tells you how many seconds to wait</li>
+<li>Check the <code>X-Rate-Limit-Remaining</code> header if present</li>
+<li>Add delays between your requests</li>
+<li>Implement exponential backoff in your code</li>
+</ol>
+<hr>
+<h3>500 Internal Server Error</h3>
+<p><strong>What happened:</strong> Something broke on the server. This is not your fault.</p>
+<p><strong>What to do:</strong></p>
+<ol>
+<li>Check if the service is down (visit the provider's status page)</li>
+<li>Try again later</li>
+<li>If building your own API: check your server logs for the actual error</li>
+<li>Report the issue to the API provider if it persists</li>
+</ol>
+<hr>
+<h3>502 Bad Gateway / 503 Service Unavailable</h3>
+<p><strong>What happened:</strong> The server (or a proxy in front of it) is down or overloaded.</p>
+<p><strong>What to do:</strong></p>
+<ol>
+<li>Wait and retry — these are usually temporary</li>
+<li>Check the service's status page</li>
+</ol>
+<hr>
+<h3>CORS Error (Not an HTTP Status Code, but Very Common)</h3>
+<p><strong>What happened:</strong> Your browser blocked the request because the server did not allow cross-origin requests.</p>
+<p>You will see something like this in the console:</p>
+<pre><code>Access to fetch at 'https://api.example.com/data' from origin
+'http://localhost:3000' has been blocked by CORS policy.
+</code></pre>
+<p><strong>What to do (as a frontend developer):</strong></p>
+<ol>
+<li>This is a <strong>backend configuration problem</strong>, not a frontend one</li>
+<li>Tell your backend developer to add the <code>Access-Control-Allow-Origin</code> header</li>
+<li>As a temporary fix during development, you can use a CORS proxy</li>
+</ol>
+<p><strong>What to do (as a backend developer):</strong>
+Add these headers to your server response:</p>
+<pre><code class="hljs language-http">Access-Control-Allow-Origin: http://localhost:3000
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE
+Access-Control-Allow-Headers: Content-Type, Authorization
+</code></pre>
+<hr>
+<h2>SUPPLEMENT 8 — HTTP Persistent Connections Explained</h2>
+<h3>The Problem HTTP/1.0 Had</h3>
+<p>In the original HTTP/1.0, every single request required:</p>
+<ol>
+<li>Open a new TCP connection (this involves a "handshake" that takes time)</li>
+<li>Send the HTTP request</li>
+<li>Receive the HTTP response</li>
+<li><strong>Close the TCP connection</strong></li>
+</ol>
+<p>For a simple webpage that loads 30 images, CSS files, and JavaScript files, this meant <strong>30 separate TCP connections</strong> being opened and closed. Each connection takes extra time (typically 50–200 ms for a round trip). This was extremely slow.</p>
+<h3>HTTP/1.1 Solution: Keep-Alive (Persistent Connections)</h3>
+<p>HTTP/1.1 introduced <strong>persistent connections</strong> (also called keep-alive). The TCP connection stays open after a request, allowing multiple requests to reuse the same connection.</p>
+<pre><code>HTTP/1.0 (old, slow):
+  Open TCP → GET index.html → Close TCP
+  Open TCP → GET style.css  → Close TCP
+  Open TCP → GET logo.png   → Close TCP
+
+HTTP/1.1 (persistent):
+  Open TCP
+    → GET index.html
+    → GET style.css
+    → GET logo.png
+  Close TCP (only when done or after timeout)
+</code></pre>
+<p>This alone made web pages significantly faster.</p>
+<h3>HTTP/2 Solution: Multiplexing</h3>
+<p>HTTP/1.1 persistent connections still had a limitation: requests had to be sent <strong>one at a time</strong> on a connection (you had to wait for a response before sending the next request, a problem called "head-of-line blocking").</p>
+<p>HTTP/2 solved this with <strong>multiplexing</strong> — multiple requests can be in flight simultaneously over a single TCP connection, like multiple phone calls happening at the same time over the same wire.</p>
+<pre><code>HTTP/2 (multiplexed over one TCP connection):
+  Open TCP
+    → GET index.html (stream 1)
+    → GET style.css  (stream 2)  ← sent at the same time, no waiting!
+    → GET logo.png   (stream 3)  ← sent at the same time!
+    ← Response for stream 2 (arrived first, out of order — that is fine)
+    ← Response for stream 1
+    ← Response for stream 3
+  Close TCP
+</code></pre>
+<h3>HTTP/3 Solution: QUIC</h3>
+<p>HTTP/3 goes further by replacing TCP entirely with a new protocol called <strong>QUIC</strong>, which is built on top of UDP.</p>
+<p>Why? Because even with multiplexing, if a single TCP packet is lost, <strong>all streams</strong> have to wait for that packet to be retransmitted (TCP's own head-of-line blocking). QUIC solves this — a lost packet only blocks the specific stream it belongs to, not all streams.</p>
+<table><thead><tr><th>Version</th><th>Transport</th><th>Connections</th><th>Performance</th></tr></thead><tbody><tr><td>HTTP/1.0</td><td>TCP</td><td>1 per request</td><td>Slow</td></tr><tr><td>HTTP/1.1</td><td>TCP</td><td>Persistent, but one-at-a-time</td><td>Better</td></tr><tr><td>HTTP/2</td><td>TCP</td><td>Multiplexed streams</td><td>Fast</td></tr><tr><td>HTTP/3</td><td>QUIC/UDP</td><td>Multiplexed, no head-of-line</td><td>Fastest</td></tr></tbody></table>
+<hr>
+<h2>SUPPLEMENT 9 — Full End-to-End Worked Example</h2>
+<p>This is the most important section. Let us trace every step of what happens when a JavaScript frontend application fetches a user profile from an API.</p>
+<h3>The Scenario</h3>
+<p>A React app running at <code>http://localhost:3000</code> wants to fetch the profile of user ID 42 from an API at <code>https://api.example.com</code>.</p>
+<p>The frontend code:</p>
+<pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">'https://api.example.com/users/42'</span>, {
+  <span class="hljs-attr">method</span>: <span class="hljs-string">'GET'</span>,
+  <span class="hljs-attr">headers</span>: {
+    <span class="hljs-string">'Authorization'</span>: <span class="hljs-string">'Bearer eyJhbGciOiJIUzI1NiJ9.abc'</span>,
+    <span class="hljs-string">'Accept'</span>: <span class="hljs-string">'application/json'</span>
+  }
+});
+<span class="hljs-keyword">const</span> user = <span class="hljs-keyword">await</span> response.<span class="hljs-title function_">json</span>();
+</code></pre>
+<hr>
+<h3>Step 1: URL Parsing</h3>
+<p>The browser parses <code>https://api.example.com/users/42</code>:</p>
+<table><thead><tr><th>Part</th><th>Value</th></tr></thead><tbody><tr><td>Protocol</td><td><code>https</code></td></tr><tr><td>Hostname</td><td><code>api.example.com</code></td></tr><tr><td>Port</td><td><code>443</code> (default for HTTPS)</td></tr><tr><td>Path</td><td><code>/users/42</code></td></tr></tbody></table>
+<hr>
+<h3>Step 2: DNS Lookup</h3>
+<p>The browser needs to find the IP address of <code>api.example.com</code>.</p>
+<pre><code>Browser asks DNS resolver: "What is the IP for api.example.com?"
+DNS resolver responds:      "It is 203.0.113.42"
+</code></pre>
+<p>This lookup may be instant if the result is cached, or take ~20–100 ms if not cached.</p>
+<hr>
+<h3>Step 3: TCP + TLS Handshake</h3>
+<p>The browser opens a TCP connection to <code>203.0.113.42</code> on port <code>443</code>.</p>
+<p>Because this is HTTPS, a TLS (encryption) handshake also occurs:</p>
+<ol>
+<li>Browser says: "I want to connect securely."</li>
+<li>Server sends its SSL certificate.</li>
+<li>Browser verifies the certificate is valid and from a trusted authority.</li>
+<li>An encryption key is agreed upon.</li>
+<li>All further communication is encrypted.</li>
+</ol>
+<p>This takes approximately 100–300 ms for a new connection (much less for subsequent requests on the same connection).</p>
+<hr>
+<h3>Step 4: HTTP Request Is Sent</h3>
+<p>The browser sends this raw HTTP request (encrypted via TLS, but conceptually this is the text):</p>
+<pre><code class="hljs language-http">GET /users/42 HTTP/2
+Host: api.example.com
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.abc
+Accept: application/json
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
+</code></pre>
+<p>Note: no body is needed because GET requests do not carry a body.</p>
+<hr>
+<h3>Step 5: Server Processes the Request</h3>
+<p>The server at <code>api.example.com</code> receives the request and:</p>
+<ol>
+<li>Routes <code>/users/42</code> to the correct handler (a function that handles user profile requests)</li>
+<li>Extracts <code>42</code> as the user ID from the path</li>
+<li>Validates the <code>Authorization</code> header — checks the JWT token</li>
+<li>Looks up user ID 42 in the database</li>
+<li>Serializes the result to JSON</li>
+</ol>
+<p>Total server processing time: typically 10–100 ms depending on database queries.</p>
+<hr>
+<h3>Step 6: HTTP Response Is Sent</h3>
+<p>The server sends back:</p>
+<pre><code class="hljs language-http">HTTP/2 200 OK
+Content-Type: application/json; charset=utf-8
+Content-Length: 127
+Cache-Control: private, max-age=60
+X-Request-Id: req_f8a2c1d0e3b5
+
+{
+  "id": 42,
+  "name": "Alice Nguyen",
+  "email": "alice@example.com",
+  "role": "developer",
+  "joined": "2024-03-15"
+}
+</code></pre>
+<hr>
+<h3>Step 7: Browser/Client Processes the Response</h3>
+<p>The JavaScript <code>fetch()</code> receives the response:</p>
+<ol>
+<li><code>response.status</code> is <code>200</code> — success.</li>
+<li><code>response.headers.get('Content-Type')</code> is <code>application/json</code>.</li>
+<li><code>response.json()</code> parses the body into a JavaScript object.</li>
+<li>The React component receives the <code>user</code> object and re-renders with the data.</li>
+</ol>
+<hr>
+<h3>Step 8: The Browser May Request Additional Assets</h3>
+<p>If the response included links to images, CSS, or other resources, the browser issues additional HTTP requests for each one — but now reusing the same TCP connection (because HTTP/2 multiplexing allows it).</p>
+<hr>
+<h3>Step 9: Complete Timeline Visualization</h3>
+<pre><code>0ms       DNS Lookup
+20ms      DNS resolved → IP: 203.0.113.42
+20ms      TCP Connect
+40ms      TCP established
+40ms      TLS Handshake begins
+120ms     TLS Handshake complete (connection secure)
+120ms     HTTP Request sent:  GET /users/42
+145ms     Server receives request, starts processing
+200ms     Database query complete
+210ms     Server sends HTTP Response: 200 OK
+230ms     Browser receives full response
+230ms     response.json() parses body
+231ms     React re-renders with user data
+</code></pre>
+<p><strong>Total time: ~231 ms</strong> (this is realistic for a cross-region API call).</p>
+<hr>
+<h3>What Could Go Wrong at Each Step</h3>
+<table><thead><tr><th>Step</th><th>Error You Might See</th><th>Meaning</th></tr></thead><tbody><tr><td>DNS Lookup</td><td><code>net::ERR_NAME_NOT_RESOLVED</code></td><td>Domain does not exist or DNS is misconfigured</td></tr><tr><td>TCP Connect</td><td><code>net::ERR_CONNECTION_REFUSED</code></td><td>Server is not running or firewall is blocking</td></tr><tr><td>TLS Handshake</td><td><code>net::ERR_CERT_AUTHORITY_INVALID</code></td><td>SSL certificate is invalid or self-signed</td></tr><tr><td>Request Sent</td><td>CORS error in console</td><td>Server did not include CORS headers</td></tr><tr><td>Server Processing</td><td><code>500 Internal Server Error</code></td><td>Bug in server code or database failure</td></tr><tr><td>Response</td><td><code>401 Unauthorized</code></td><td>Token is missing or expired</td></tr><tr><td>Response</td><td><code>404 Not Found</code></td><td>User ID 42 does not exist</td></tr><tr><td>Response</td><td><code>200 OK</code> but wrong data</td><td>Business logic bug in the server</td></tr></tbody></table>
+<hr>
+<h2>Quick Reference Card</h2>
+<h3>The Complete HTTP Request/Response Checklist</h3>
+<p>When debugging any HTTP issue, check these in order:</p>
+<p><strong>Request side:</strong></p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="" type="checkbox"> Is the URL correct (no typos, correct domain, correct path)?</li>
+<li class="task-list-item"><input disabled="" type="checkbox"> Is the HTTP method correct (GET vs POST vs PUT vs DELETE)?</li>
+<li class="task-list-item"><input disabled="" type="checkbox"> Does the <code>Content-Type</code> header match the body format?</li>
+<li class="task-list-item"><input disabled="" type="checkbox"> Is the <code>Authorization</code> header present and correctly formatted?</li>
+<li class="task-list-item"><input disabled="" type="checkbox"> Is the request body valid JSON (if sending JSON)?</li>
+<li class="task-list-item"><input disabled="" type="checkbox"> Are all required fields included in the body?</li>
+</ul>
+<p><strong>Response side:</strong></p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="" type="checkbox"> What is the status code? (See status code guide above)</li>
+<li class="task-list-item"><input disabled="" type="checkbox"> What does the response body say? (It usually explains the error)</li>
+<li class="task-list-item"><input disabled="" type="checkbox"> Is there a CORS error in the browser console?</li>
+<li class="task-list-item"><input disabled="" type="checkbox"> Is the <code>Content-Type</code> in the response what you expected?</li>
+</ul>
+<p><strong>Network side:</strong></p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="" type="checkbox"> Can you reach the server at all? (Try opening the URL in a browser)</li>
+<li class="task-list-item"><input disabled="" type="checkbox"> Is it a DNS issue? (Try <code>ping api.example.com</code> in terminal)</li>
+<li class="task-list-item"><input disabled="" type="checkbox"> Is it a certificate issue? (Check the browser's security warning)</li>
+</ul>
+<hr>
+<p><em>This supplementary guide covers the 9 most important gaps for beginner web developers learning about HTTP. Combined with the original document, you now have a complete foundational understanding of how web communication works.</em></p>
+</body>
+</html>
